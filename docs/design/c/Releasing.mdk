@@ -16,9 +16,10 @@ publish your package to [vcpkg](https://github.com/Microsoft/vcpkg), a C++ libra
 
 ~ Should
 publish libraries targeted to Linux to standard Linux package managers
+~
+
 ~ ToDo
 decide which Linux package managers to support plus which repositories we bless.
-~
 ~
 
 ~ ToDo

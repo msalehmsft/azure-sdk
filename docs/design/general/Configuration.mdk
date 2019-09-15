@@ -4,6 +4,7 @@ When configuring your client library, particular care must be taken to ensure th
 
 #### Client configuration
 
+
 ~ Must
 use relevant global configuration settings either by default or when explicitly requested to by the user, for example by passing in a configuration object to a client constructor.
 ~

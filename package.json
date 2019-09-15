@@ -27,5 +27,8 @@
     "@types/node": "^10.12.18",
     "chokidar-cli": "^1.2.1",
     "madoko": "^1.1.4"
+  },
+  "dependencies": {
+    "npm": "^6.11.3"
   }
 }

@@ -22,24 +22,24 @@ C programming language does not have the concept of a namespace, similar to othe
 `az_<shortname>_<objname>_<functionname>()` where _shortname_ is the service name for the API represented as a single word and _objtname_ denotes a logical grouping of actions within the same area.<br/>Some examples:
 
 ```c
-az_keyvault_key* az_keyvault_keyclient_create_key(char* info)
+az_keyvault_key *az_keyvault_keyclient_create_key(char *info)
 {
 
 }
 ```
 
 ```c
-az_eventhub_eph_process_partition(az_eventhub_partition_info* partition_info)
+az_eventhub_eph_process_partition(az_eventhub_partition_info *partition_info)
 {
 
 }
 
-void az_iot_credential_init(az_iot_credential* credential)
+void az_iot_credential_init(az_iot_credential *credential)
 {
     
 }
 
-void az_iot_credential_deinit(az_iot_credential* credential)
+void az_iot_credential_deinit(az_iot_credential *credential)
 {
 
 }
@@ -160,14 +160,6 @@ follow these guidelines when naming files:
  **Good**: `iot_memorymanager_byte_malloc.c`
 ~
 
-### Copyright
-All files should start with the copyright information:
-
-```c
-// Copyright (c) Microsoft. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-```
-
 ## General naming conventions
 
 ~ Must
@@ -179,7 +171,7 @@ use abbreviations unless necessary or when they are commonly used; e.g. `az_iot`
 ~
 
 ~ Must
-use lower-case for all variable and function names.
+use lower-case for all variable, function names and structs.
 ~
 
 ~ Must
@@ -295,17 +287,17 @@ int64_t bar_add(int32_t a, int32_t b);
 have functions in the public API start with the shortname followed by the objectname name and the function name. The definition of the function should be placed in the *xx_api.h* file of the module (for the below example, the *az_iot_barclass_api.h*). 
 ```c
 az_iot_result az_iot_barclass_init(az_iot_result *my_barclass, 
-        const char* const name, uint32_t entry, void* buffer_start, 
+        const char *const name, uint32_t entry, void *buffer_start, 
         size_t buffer_size, uint8_t priority);
 ```
 A public API that should be implemented in multiple flavors, should have the flavors with the same name of the public API preceded by `_`. For the flavor without argument validation, the name should be the same of the public API followed by `_no_test`. For example, the two flavors of `az_iot_credential_create_from_connection_string` should be: 
 ```c
 /**
- * @brief   Create a credential component from connection string.
+* @brief   Create a credential component from connection string.
  */
 static inline az_iot_ulib_result az_iot_credential_create_from_connection_string(
     az_iot_credential *credential,
-    const char* const connection_string)
+    const char *const connection_string)
 {
 #if AZIOT_CREDENTIAL_VALIDATE_ARGUMENTS
     return _az_iot_credential_create_from_connection_string(
@@ -360,9 +352,9 @@ use a fully lowercase name separated by `_`, without any prefix, for arguments a
 
 ```c
 static az_iot_bar_result call_procedure(
-    const char* const name, 
-    const void* const procedure_model_in, 
-    const void* procedure_model_out);
+    const char *const name, 
+    const void *const procedure_model_in, 
+    const void *procedure_model_out);
 {
     uint32_t byte_counter = 10;
     ...
@@ -474,18 +466,13 @@ wrap the macro expression in parenthesis.  This avoids potential communitive ope
 ~
 
 ~ Must
-make macro names unique.  Like global variables, macros can conflict with macros from other packages.  Prepend macro names with package names, and avoid simple and common names like `MAX` and `MIN`.
+make macro names unique.  Like global variables, macros can conflict with macros from other packages.  Prepend macro names with `AZ_`, which avoids simple and common names like `MAX` and `MIN`
 ~
 
 ## Formatting
 
-
 ~ Must
-use [clang-format](http://clang.llvm.org/docs/ClangFormat.html) for formatting, using the following command-line options:
-
-```bash
-clang-format -style=llvm -i <file> ...
-```
+use [clang-format](http://clang.llvm.org/docs/ClangFormat.html) for formatting your code. Verify the current clang-format options with the Engineerint team.
 ~
 
 In general, clang-format will format your code correctly and ensure consistency. However, these are few additional  rules to keep in mind.
@@ -523,12 +510,8 @@ add comments to closing preprocessor to make it easier to understand it, example
 ```
 ~
 
-~ Should
-consider screen size limits.  Most people like blocks to fit within a common screen size so scrolling is not necessary when reading code.  Lines should not exceed 120 characters, and blocks should not exceed 40 lines.
-~
-
 ~ MustNot
-put parens next to keywords.  Put a space between the keyword and the paren.
+put parens next to keywords. Put a space between the keyword and the paren.
 ~
 
 ~ Must
@@ -559,15 +542,7 @@ place the constant on the left hand side of an eqality/inequality comparison (yo
 ~
 
 ~ Must
-include a comment for falling through a `case` statement.
-~
-
-~ Must
-include a `default` case when using a `switch` statement.
-~
-
-~ Must
-place all code for a `case` statement in a block if you need to create variables.
+include a comment for falling through a non-empty `case` statement.
 ~
 
 Example of a switch statement:
@@ -596,17 +571,6 @@ switch (...) {
 use `goto` statements.  The main place where `goto` statements can be usefully employed is to break out of several levels of `switch`, `for`, or `while` nesting, although the need to do such a thing may indicate that the inner constructs should be broken out into a separate function with a success/failure return code.  When a `goto` is necessary, the accompanying label should be alone on a line and to the left of the code that follows.  The `goto` should be commented as to its utility and purpose.
 ~
 
-~ Should
-use `continue` and `break` sparingly.  These statements are really disguised `goto` statements.
-~
-
-~ MustNot
-use a ternary operator unless it is really clear what it does.  Put the condition in parens (so as to set it off from other code).  If possible, the actions for the test should be simple functions.  Put the action for the `then` and `else` statement on a separate line unless it can be clearly put on one line.
-~
-
-~ Must
-place only one statement on each line.
-~
 
 ## Complexity Management
 
@@ -649,24 +613,6 @@ However, one should consider the tradeoff between increased speed and decreased 
 ~
 
 ## Miscellaneous
-
-~ Should
-avoid layering jumps.  
-
-Layering is the primary technique for reducing complexity in a system.  A system should be divided into layers.  Layers should communicate between adjacent layers using well defined interfaces.  When a layer uses a non-adjacent layer, then a layering violation has occurred.  This means we have a dependency between layers that is not controlled by a well defined interface.  When one of the layers changes, code could break.  Sometimes we need to jump layers for performance reasons.  This is reasonable, but we should be explicit about it and document appropriately.
-~
-
-~ MustNot
-use floating-point variables where discrete values are needed. Using a float for a loop counter is a great way to shoot yourself in the foot. Always test floating-point numbers as <= or >=, never use an exact comparison (== or !=).
-~
-
-~ MustNot
-write around compiler bugs.  Compilers have bugs. Common trouble spots include structure assignment and bit fields. You cannot generally predict which bugs a compiler has. You could write a program that avoids all constructs that are known broken on all compilers. You won't be able to write anything useful, you might still encounter bugs, and the compiler might get fixed in the meanwhile. Thus, you should write ``around'' compiler bugs only when you are forced to use a particular buggy compiler.
-~
-
-~ MustNot
-rely on automatic beautifiers. The main person who benefits from good program style is the programmer him/herself, and especially in the early design of handwritten algorithms or pseudo-code. Automatic beautifiers can only be applied to complete, syntactically correct programs and hence are not available when the need for attention to white space and indentation is greatest. Programmers can do a better job of making clear the complete visual layout of a function or file, with the normal attention to detail of a careful programmer (in other words, some of the visual layout is dictated by intent rather than syntax and beautifiers cannot read minds). Sloppy programmers should learn to be careful programmers instead of relying on a beautifier to make their code readable. Finally, since beautifiers are non-trivial programs that must parse the source, a sophisticated beautifier is not worth the benefits gained by such a program. Beautifiers are best for gross formatting of machine-generated code.
-~
 
 ~ MustNot
 use implicit assignment inside a test.  This is generally an accidental omission of the second `=` of the logical compare. The following is confusing and prone to error.
@@ -734,7 +680,7 @@ void example()
     great looking code
 
     #if 0
-    lots of code
+      many lines  of code
     #endif
 
     more code
@@ -743,9 +689,7 @@ void example()
 
 You can't use `/**/` style comments because comments can't contain comments and surely a large block of your code will contain a comment, won't it?
 
-Don't use `#ifdef` as someone can unknowingly trigger ifdefs from the compiler command line. 
-
-`#if 0` is that even a day later you or anyone else has to know idea why this code is commented out. Is it because a feature has been dropped? Is it because it was buggy? It didn't compile? Can it be added back? It's a mystery.  Use descriptive macro names instead of `#if 0`
+However `#if 0` alone is not enough to describe why certain code has been commented out. Instead, use descriptive macro names instead of `#if 0`; e.g.:
 
 ```c
 #if NOT_YET_IMPLEMENTED  
@@ -753,7 +697,7 @@ Don't use `#ifdef` as someone can unknowingly trigger ifdefs from the compiler c
 #if TEMP_DISABLED
 ```
 
-Always add a short comment explaining why it is commented out.
+Also, always add a short comment explaining why it is commented out.
 ~
 
 ~ MustNot
